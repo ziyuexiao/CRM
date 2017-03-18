@@ -1,5 +1,6 @@
 package com.kaishengit.controller;
 
+import com.kaishengit.dto.FlashMessage;
 import com.kaishengit.service.UserService;
 import com.kaishengit.util.ServletUtil;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -47,13 +48,13 @@ public class HomeController {
             subject.login(usernamePasswordToken);
 
             //获取登录的IP地址，并保存用户登录的日志
-          //  userService.saveUserLogin(ServletUtil.getRemoteIp(request));
+           userService.saveUserLogin(ServletUtil.getRemoteIp(request));
 
             return "redirect:/home";
         } catch (LockedAccountException ex) {
-          //  redirectAttributes.addFlashAttribute("message",new FlashMessage(FlashMessage.STATE_ERROR,"账号已被禁用"));
+          redirectAttributes.addFlashAttribute("message",new FlashMessage(FlashMessage.STATE_ERROR,"账号已被禁用"));
         } catch (AuthenticationException exception) {
-           // redirectAttributes.addFlashAttribute("message",new FlashMessage(FlashMessage.STATE_ERROR,"账号或密码错误"));
+            redirectAttributes.addFlashAttribute("message",new FlashMessage(FlashMessage.STATE_ERROR,"账号或密码错误"));
         }
         return "redirect:/";
     }

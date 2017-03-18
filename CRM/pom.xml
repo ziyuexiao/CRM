@@ -96,11 +96,11 @@
     </dependency>
 
     <!--Shiro-->
-   <!-- <dependency>
+    <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-all</artifactId>
       <version>1.2.4</version>
-    </dependency>-->
+    </dependency>
 
     <!--other-->
     <dependency>
@@ -161,6 +161,18 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.7.21</version>
+    </dependency>
+    <!--pinyin4j-->
+    <dependency>
+      <groupId>com.belerweb</groupId>
+      <artifactId>pinyin4j</artifactId>
+      <version>2.5.1</version>
+    </dependency>
+    <!--json-->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.6.6</version>
     </dependency>
 
   </dependencies>

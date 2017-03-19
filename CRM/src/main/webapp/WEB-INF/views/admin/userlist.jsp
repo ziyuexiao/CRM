@@ -182,11 +182,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
     $(function(){
 
         var dataTable = $("#userTable").DataTable({
-            serverSide:true,
-            ajax:"/admin/users/load",
-            ordering:false,
+            "serverSide":true,
+            "ajax":{
+                "url":"/admin/users/load",
+                "type":"get"
+            },
+            "ordering":false,
             "autoWidth": false,
-            columns:[
+            "columns":[
                 {"data":"id"},
                 {"data":"username"},
                 {"data":"realname"},
@@ -308,7 +311,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     alert("服务器异常");
                 });
             }
-        })
+        });
 
         //编辑
 
@@ -348,7 +351,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $(document).delegate(".edit","click",function(){
             var id = $(this).attr("rel");
             $.get("/admin/users/"+id+".json").done(function(result){
-                if(result.state == "success") {
+                if(result.status == "success") {
                     $("#edit_user_id").val(result.data.id);
                     $("#edit_user_username").val(result.data.username);
                     $("#edit_user_realname").val(result.data.realname);

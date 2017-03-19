@@ -10,4 +10,6 @@ import java.util.List;
 public interface RoleMapper {
 
     List<Role> findAll();
+
+    Role findById(Integer roleId);
 }

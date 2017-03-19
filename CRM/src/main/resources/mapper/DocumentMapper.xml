@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaishengit.mapper.DocumentMapper">
+    <insert id="saveNewFolder">
+        INSERT INTO t_document(name, `size`, createuser, type, filename, md5, fid,contexttype)
+        VALUES (#{name},#{size},#{createuser},#{type},#{filename},#{md5},#{fid},#{contexttype})
+    </insert>
+    <delete id="delById">
+        DELETE FROM t_document WHERE id = #{id}
+    </delete>
+    <delete id="batchDel">
+        DELETE FROM t_document WHERE id IN (
+
+        <foreach collection="list" item="id" separator=",">
+            #{id}
+        </foreach>
+
+        )
+    </delete>
+
+    <select id="findByFid" resultType="com.kaishengit.pojo.Document">
+        SELECT * from t_document WHERE fid = #{fid}
+    </select>
+    <select id="findId" resultType="com.kaishengit.pojo.Document">
+        SELECT * FROM t_document WHERE id = #{id}
+    </select>
+    <select id="findAll" resultType="com.kaishengit.pojo.Document">
+         SELECT * FROM t_document
+    </select>
+</mapper>

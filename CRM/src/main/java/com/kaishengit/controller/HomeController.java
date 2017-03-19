@@ -67,11 +67,7 @@ public class HomeController {
     public String logout(RedirectAttributes redirectAttributes) {
         SecurityUtils.getSubject().logout();
 
-<<<<<<< HEAD
       redirectAttributes.addFlashAttribute("message",new FlashMessage("你已安全退出"));
-=======
-        //redirectAttributes.addFlashAttribute("message",new FlashMessage("你已安全退出"));
->>>>>>> dev
         return "redirect:/";
     }
 

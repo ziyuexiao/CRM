@@ -3,17 +3,28 @@ package com.kaishengit.service;
 import com.kaishengit.mapper.CustomerMapper;
 import com.kaishengit.pojo.Customer;
 import com.kaishengit.util.ShiroUtil;
+<<<<<<< HEAD
 import com.kaishengit.util.Strings;
+=======
+>>>>>>> 96473e52ed04370823477e91a7d6e89f010cdda5
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Map;
 
+=======
+
+/**
+ * Created by lenovo on 2017/3/22.
+ */
+>>>>>>> 96473e52ed04370823477e91a7d6e89f010cdda5
 @Service
 public class CustomerService {
     @Autowired
     private CustomerMapper customerMapper;
+<<<<<<< HEAD
 
     /**
      * 查询所有公司
@@ -102,5 +113,13 @@ public class CustomerService {
             }
         }
         customerMapper.customeDel(id);
+=======
+    /**
+     * 展示该用户下的客户
+     * @return
+     */
+    public List<Customer> findAllCustomerByUserid(Integer userid) {
+        return customerMapper.findAll(userid);
+>>>>>>> 96473e52ed04370823477e91a7d6e89f010cdda5
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.kaishengit.mapper.CustomerMapper">
+<<<<<<< HEAD
     <insert id="save">
         INSERT INTO t_customer(name, tel, weixin, address, email, userid, pinyin, companyid, companyname, level, type)
         VALUES (#{name},#{tel},#{weixin},#{address},#{email},#{userid},#{pinyin},#{companyid},#{companyname},#{level},#{type})
@@ -52,6 +53,17 @@
                 concat('%',#{keyword},'%'))
             </if>
         </where>
+=======
+
+    <select id="findAll" resultType="com.kaishengit.pojo.Customer">
+        SELECT * FROM t_customer
+        <where>
+            <if test="userid != null and userid != ''">
+                userid =#{userid}
+            </if>
+        </where>
+        ORDER BY id DESC
+>>>>>>> 96473e52ed04370823477e91a7d6e89f010cdda5
     </select>
     <select id="findById" resultType="com.kaishengit.pojo.Customer">
         SELECT * FROM t_customer WHERE id = #{id}

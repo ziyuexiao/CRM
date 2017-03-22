@@ -31,7 +31,7 @@ public interface CustomerMapper {
 
 
 
-    List<Customer> findAll(Integer userid);
+
 
 
 

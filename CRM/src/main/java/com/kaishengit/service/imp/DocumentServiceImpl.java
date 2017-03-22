@@ -6,6 +6,7 @@ import com.kaishengit.exception.ServiceException;
 import com.kaishengit.mapper.DocumentMapper;
 import com.kaishengit.pojo.Document;
 import com.kaishengit.service.DocumentService;
+import com.kaishengit.util.ShiroUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,13 +94,13 @@ public class DocumentServiceImpl implements DocumentService {
         document.setName(sourceName);
         document.setFid(fid);
         document.setType(Document.TYPE_DOC);
-       // document.setCreateuser(ShiroUtil.getCurrentRealName());
+        document.setCreateuser(ShiroUtil.getCurrentRealName());
         document.setContexttype(contentType);
         document.setSize(FileUtils.byteCountToDisplaySize(size));
-        //document.setMd5(md5);
+       // document.setMd5(md5);
         document.setFilename(newName);
         //TODO
-        //document.setCreateuser();
+        document.setCreateuser(ShiroUtil.getCurrentRealName());
 
        documentMapper.saveNewFolder(document);
     }

@@ -346,16 +346,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                 });
             });
-           /* if(confirm("删除客户会自动删除关联数据，继续吗?")) {
-                var id = $(this).attr("rel");
-                $.get("/customer/del/"+id).done(function(data){
-                    if("success" == data.status) {
-                        dataTable.ajax.reload();
-                    }
-                }).fail(function(){
-                    alert("服务器异常");
-                });
-            }*/
         });
         </shiro:hasRole>
 
@@ -386,7 +376,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         dataTable.ajax.reload();
                     }
                 }).fail(function(){
-                    alert("服务器异常");
+                  layer.alert("服务器异常");
                 });
             }
         });
@@ -439,10 +429,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         keyboard: false
                     });
                 } else {
-                    alert(data.message);
+                    layer.alert(data.message);
                 }
             }).fail(function(){
-                alert("服务器异常");
+               layer.alert("服务器异常");
             });
         });
 

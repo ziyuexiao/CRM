@@ -3,9 +3,15 @@ package com.kaishengit.controller;
 import com.google.common.collect.Maps;
 import com.kaishengit.dto.AjaxResult;
 import com.kaishengit.dto.DataTablesResult;
+import com.kaishengit.exception.ForbiddenException;
+import com.kaishengit.exception.NotFoundException;
 import com.kaishengit.pojo.Customer;
+import com.kaishengit.pojo.Sales;
+import com.kaishengit.pojo.User;
 import com.kaishengit.service.CustomerService;
-import javafx.geometry.Pos;
+import com.kaishengit.service.SalesService;
+import com.kaishengit.service.UserService;
+import com.kaishengit.util.ShiroUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +32,10 @@ import java.util.Map;
 @RequestMapping("/customer")
 public class CustomerController {
 
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private SalesService salesService;
     @Autowired
     private CustomerService customerService;
 
@@ -75,6 +85,7 @@ public class CustomerController {
 
     /**
      * 添加用户
+     *
      * @param customer
      * @return
      */
@@ -89,6 +100,7 @@ public class CustomerController {
 
     /**
      * 删除用户
+     *
      * @param id
      * @return
      */
@@ -97,5 +109,117 @@ public class CustomerController {
     public AjaxResult del(@PathVariable Integer id) {
         customerService.delCustomer(id);
         return new AjaxResult(AjaxResult.SUCCESS);
+    }
+
+    /**
+     * 编辑客户
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("/edit/{id:\\d+}.json")
+    @ResponseBody
+    public Map<String, Object> editCustomer(@PathVariable Integer id) {
+        Map<String, Object> result = Maps.newHashMap();
+
+        //1.根据对应的id查找客户
+        Customer customer = customerService.findCustomerById(id);
+        //2.判断是否为空
+        if (customer == null) {
+            result.put("state", "error");
+            result.put("message", "找不到对应的客户");
+        } else {
+            List<Customer> companyList = customerService.findAllCompany();
+            result.put("state", "success");
+            result.put("customer", customer);
+            result.put("companyList", companyList);
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    @ResponseBody
+    public String edit(Customer customer) {
+        customerService.editCustomer(customer);
+        return "success";
+    }
+
+    /**
+     * 显示客户信息
+     *
+     * @return
+     */
+    @RequestMapping(value = "{id:\\d+}", method = RequestMethod.GET)
+    public String showCustomer(@PathVariable Integer id, Model model) {
+        //根据id查找用户
+        Customer customer = customerService.findCustomerById(id);
+        //判断用户是否存在
+        if (customer == null) {
+            throw new NotFoundException();
+        }
+        //公共的用户，不是我的用户，不是经理，不让看
+        if (customer.getUserid() != null && !customer.getUserid().equals(ShiroUtil.getCurrentUserID()) && !ShiroUtil.isManager()) {
+            throw new ForbiddenException();
+        }
+
+        model.addAttribute("customer", customer);
+
+        //查找公司所用的客户
+        if (customer.getType().equals(Customer.CUSTOMER_TYPE_COMPANY)) {
+            List<Customer> customerList = customerService.findCompanyCustomerById(id);
+            model.addAttribute("customerList", customerList);
+        }
+
+        //加载所有员工
+
+        List<User> userList = userService.findAllUser();
+        model.addAttribute("userList", userList);
+
+        //加载客户对应的销售机会列表
+      /*  List<Sales> salesList = salesService.findSalesByCustId(id);
+        model.addAttribute("salesList", salesList);*/
+
+
+        return "customer/view";
+    }
+
+    /**
+     * 公开用户
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/open/{id:\\d+}", method = RequestMethod.GET)
+    public String openCustomer(@PathVariable Integer id) {
+
+        //根据id获取用户
+        Customer customer = customerService.findCustomerById(id);
+
+        if (customer == null) {
+            throw new NotFoundException();
+        }
+        if (customer.getUserid() != null && !customer.getUserid().equals(ShiroUtil.getCurrentUserID()) && !ShiroUtil.isManager()) {
+            throw new ForbiddenException();
+        }
+        customerService.openCustomer(customer);
+        //重定向修改的id
+        return "redirect:/customer/" + id;
+    }
+
+    /**
+     * 转移客户
+     */
+    @RequestMapping(value = "/move", method = RequestMethod.POST)
+    public String moveCust(Integer id, Integer userid) {
+        Customer customer = customerService.findCustomerById(id);
+        if (customer == null) {
+            throw new NotFoundException();
+        }
+        if (customer.getUserid() != null && !customer.getUserid().equals(ShiroUtil.getCurrentUserID()) && !ShiroUtil.isManager()) {
+            throw new ForbiddenException();
+        }
+        customerService.moveCust(customer, userid);
+        //回到列表页
+        return "redirect:/customer";
     }
 }

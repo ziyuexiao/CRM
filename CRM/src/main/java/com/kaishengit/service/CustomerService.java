@@ -6,6 +6,7 @@ import com.kaishengit.util.ShiroUtil;
 import com.kaishengit.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -76,9 +77,9 @@ public class CustomerService {
         if (customer.getCompanyid() != null) {
             //根据id查找对应的公司，然后获取公司名字赋值到customer
             Customer company = customerMapper.findById(customer.getCompanyid());
-            customer.setCompanyname(company.getCompanyname());
+            customer.setCompanyname(company.getName());
         }
-        customer.setId(ShiroUtil.getCurrentUserID());
+        customer.setUserid(ShiroUtil.getCurrentUserID());
         customer.setPinyin(Strings.toPinyiin(customer.getName()));
         customerMapper.save(customer);
     }
@@ -89,6 +90,7 @@ public class CustomerService {
      * @param id 用户id
      */
 
+    @Transactional
     public void delCustomer(Integer id) {
 
         Customer customer = customerMapper.findById(id);
@@ -107,13 +109,72 @@ public class CustomerService {
             }
         }
         customerMapper.customeDel(id);
-        /**
-         * 展示该用户下的客户
-         * @return
-         */
-    /*public List<Customer> findAllCustomerByUserid(Integer userid) {
-        return customerMapper.findAll(userid);
+    }
 
-    }*/
+    /**
+     * 根据id查找对应的客户
+     *
+     * @param id
+     * @return
+     */
+    public Customer findCustomerById(Integer id) {
+        return customerMapper.findById(id);
+    }
+
+    /**
+     * 修改用户
+     *
+     * @param customer
+     */
+
+    @Transactional
+    public void editCustomer(Customer customer) {
+        //判断如果是公司
+        if (customer.getType().equals(Customer.CUSTOMER_TYPE_COMPANY)) {
+            //找到关联的用户,修改
+            List<Customer> customerList = customerMapper.findByCompanyId(customer.getId());
+            for (Customer customer1 : customerList) {
+                customer1.setCompanyname(customer.getName());
+                customer1.setCompanyid(customer.getCompanyid());
+                customerMapper.update(customer1);
+            }
+        } else {
+            //是个人
+            if (customer.getCompanyid() != null) {
+                Customer company = customerMapper.findById(customer.getCompanyid());
+                company.setCompanyname(company.getName());
+            }
+        }
+        customer.setPinyin(Strings.toPinyiin(customer.getName()));
+        customerMapper.update(customer);
+    }
+
+    /**
+     * 根据公司id获取公司的客户
+     * @param id
+     * @return
+     */
+    public List<Customer> findCompanyCustomerById(Integer id) {
+        return customerMapper.findByCompanyId(id);
+    }
+
+    /**
+     * 公开用户
+     * @param customer
+     */
+    public void openCustomer(Customer customer) {
+        customer.setUserid(null);
+        customerMapper.update(customer);
+    }
+
+    /**
+     * 转义用户
+     * @param customer
+     * @param userid
+     */
+
+    public void moveCust(Customer customer, Integer userid) {
+        customer.setUserid(userid);
+        customerMapper.update(customer);
     }
 }

@@ -29,11 +29,6 @@ public interface CustomerMapper {
 
     void customeDel(Integer id);
 
-
-
-
-
-
-
+    List<Customer> findByCompanyId(Integer id);
 
 }
